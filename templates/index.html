@@ -3,7 +3,7 @@
 
 <center>
     <br>
-    <h2>Select a X-Ray image to get started...</h2>
+    <h3>Select a X-Ray image to get started...</h2>
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-8">
@@ -18,14 +18,14 @@
     
     
     <form id="upload-file" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" class="btn btn-primary" id="imageUpload" accept=".png, .jpg, .jpeg">
-        <input class="btn btn-secondary" type="button" onClick="history.go(0)" VALUE="Refresh">
+        <input type="file" name="file" class="btn btn-dark btn-sm" id="imageUpload" accept=".png, .jpg, .jpeg">
+        
     </form>
 
     <div class="image-section" style="display:none;">
          <img id="imagePreview"  class="img-responsive" src="#" style="width:300px;height:300px;"/><br><br>
          <div>
-            <button type="button" class="btn btn-success" id="btn-predict">Predict</button>
+            <button type="button" class="btn btn-primary" id="btn-predict">Predict</button>
          </div>
     </div>
 
