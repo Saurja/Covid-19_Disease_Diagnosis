@@ -8,7 +8,7 @@
         <div class="row justify-content-center">
             <div class="col-8">
                 <div class="alert alert-info" role="alert">
-                    <span>Current Location:</span> <span id="guess"></span> 
+                    <span><b>Current Location:</b></span> <span id="guess"></span> 
                 </div>
             </div>
         </div>
@@ -37,9 +37,12 @@
         
     </h3>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.6/jstz.min.js"></script>
     <script>
-        document.getElementById('guess').innerText = jstz.determine().name();
+        fetch('https://ipinfo.io/json?<YourToken>')
+            .then(res => res.json())
+            .then(data => {localStorage.setItem('ipinfo', data)
+            document.getElementById('guess').innerText = data.city + ", " + data.region + ", " + data.country
+        })
     </script>
 
 
