@@ -38,13 +38,12 @@
     </h3>
 
     <script>
-        fetch('https://ipinfo.io/json?<YourToken>')
+        fetch('https://ipinfo.io/json?token=6c70431184a111')
             .then(res => res.json())
             .then(data => {localStorage.setItem('ipinfo', data)
             document.getElementById('guess').innerText = data.city + ", " + data.region + ", " + data.country
         })
     </script>
-
 
 </center>
 <br><br>
