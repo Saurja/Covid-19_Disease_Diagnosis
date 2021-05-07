@@ -1,10 +1,13 @@
 import os
+import requests
+import csv
 import numpy as np
 from skimage import io
 import torch
 import torchvision.models 
 from PIL import Image
 from torchvision import transforms
+
 
 
 
@@ -63,8 +66,21 @@ def upload():
         disease_class = ['Non Covid','Covid']
         a = preds[0][0]
         ind= 0 if a <=0.5 else 1
+
+        # Api request to get location data
+        response = requests.get("https://ipinfo.io/json?token=6c70431184a111")
+        curLoc = response.json()['region']
+
+        # Save in Database
+        import sqlite3 as sl
+        con = sl.connect('locationHistory.db')
+        with con:
+            con.execute("UPDATE LocationHistory SET CovidCases = CovidCases + 1 WHERE State = (?)", [curLoc])
+            con.commit()
+
+        # Print result in Webpage
         print('Prediction:', disease_class[ind],' Confidence: ',a.numpy()) 
-        result=disease_class[ind] + " | Confidence : " + str(a.numpy())
+        result=disease_class[ind] + " | Confidence : " + str(a.numpy()) + " | Location : " + response.json()['region']
         return result
     return None
 

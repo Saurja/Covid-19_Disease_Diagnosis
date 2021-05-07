@@ -4,18 +4,8 @@
 <center>
     <br>
     <h3>Select a X-Ray image to get started...</h2>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-8">
-                <div class="alert alert-info" role="alert">
-                    <span><b>Current Location:</b></span> <span id="guess"></span> 
-                </div>
-            </div>
-        </div>
-    </div>
     
     <br>
-    
     
     <form id="upload-file" method="post" enctype="multipart/form-data">
         <input type="file" name="file" class="btn btn-dark btn-sm" id="imageUpload" accept=".png, .jpg, .jpeg">
@@ -36,14 +26,6 @@
         <span> </span>
         
     </h3>
-
-    <script>
-        fetch('https://ipinfo.io/json?token=6c70431184a111')
-            .then(res => res.json())
-            .then(data => {localStorage.setItem('ipinfo', data)
-            document.getElementById('guess').innerText = data.city + ", " + data.region + ", " + data.country
-        })
-    </script>
 
 </center>
 <br><br>
