@@ -71,16 +71,18 @@ def upload():
         response = requests.get("https://ipinfo.io/json?token=6c70431184a111")
         curLoc = response.json()['region']
 
-        # Save in Database
-        import sqlite3 as sl
-        con = sl.connect('locationHistory.db')
-        with con:
-            con.execute("UPDATE LocationHistory SET CovidCases = CovidCases + 1 WHERE State = (?)", [curLoc])
-            con.commit()
-
         # Print result in Webpage
         print('Prediction:', disease_class[ind],' Confidence: ',a.numpy()) 
         result=disease_class[ind] + " | Confidence : " + str(a.numpy()) + " | Location : " + response.json()['region']
+
+        # Save in Database
+        if disease_class[ind] == 'Covid':
+            import sqlite3 as sl
+            con = sl.connect('locationHistory.db')
+            with con:
+                con.execute("UPDATE LocationHistory SET CovidCases = CovidCases + 1 WHERE State = (?)", [curLoc])
+                con.commit()
+        
         return result
     return None
 
