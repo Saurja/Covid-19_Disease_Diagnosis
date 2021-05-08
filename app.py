@@ -1,6 +1,7 @@
 import os
 import requests
 import csv
+import sqlite3 as sl
 import numpy as np
 from skimage import io
 import torch
@@ -85,6 +86,35 @@ def upload():
         
         return result
     return None
+
+@app.route("/chart", methods=['GET'])
+def chart():
+    
+    # Fetch data from SQL Server
+    con = sl.connect('locationHistory.db')
+    cursor = con.cursor()
+    cursor.execute("SELECT * from LocationHistory")
+    data=cursor.fetchall()
+    
+    
+
+    legend = 'Covid-19 Cases Detected So Far'
+    labels = [elt[1] for elt in data]
+    values = [elt[2] for elt in data]
+
+    # creating sum_list function
+    def sumOfList(list, size):
+        if (size == 0):
+            return 0
+        else:
+            return list[size - 1] + sumOfList(list, size - 1)
+    
+    # Driver code    
+    total = sumOfList(values, len(values))
+ 
+
+
+    return render_template('chart.html', values=values, labels=labels, legend=legend, total=total)
 
 
 if __name__ == '__main__':
