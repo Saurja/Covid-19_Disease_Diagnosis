@@ -2,15 +2,14 @@
 {% block content %}
 
 <center>
-    
-    <br>
+    <div class="container mt-3">
+        <br>
     <h3>Select a X-Ray image to get started...</h2>
     
     <br>
     
     <form id="upload-file" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" class="btn btn-dark btn-sm" id="imageUpload" accept=".png, .jpg, .jpeg">
-        
+        <input type="file" name="file" class="btn btn-dark btn-large" id="imageUpload" accept=".png, .jpg, .jpeg">
     </form>
 
     <div class="image-section" style="display:none;">
@@ -23,10 +22,12 @@
 
     <div class="loader" style="display:none;"></div>
 
-    <h3 id="result">
+    <h4 id="result">
         <span> </span>
         
-    </h3>
+    </h4>
+      </div>
+    
 
 </center>
 <br><br>

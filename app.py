@@ -116,6 +116,10 @@ def chart():
 
     return render_template('chart.html', values=values, labels=labels, legend=legend, total=total)
 
+@app.route('/about', methods=['GET'])
+def about():
+    # Main page
+    return render_template('about.html')
 
 if __name__ == '__main__':
     # app.run(port=5002, debug=True)
