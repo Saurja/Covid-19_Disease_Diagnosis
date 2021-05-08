@@ -22,7 +22,7 @@
             <strong>{{ total }}</strong>
         </center>
     </div>
-    <canvas id="myChart"></canvas>
+    <canvas id="myChart" width="100vw" height="auto" class="my-5"></canvas>
 </div>
 
 <script>
@@ -43,14 +43,16 @@
                     backgroundColor: ['rgba(54, 162, 235, 0.2)'],
                     borderColor: ['rgba(54, 162, 235, 1)'],
                     borderWidth: 1,
+                    skipNull: true,
                 },
             ],
         },
         options: {
             responsive: true,
+            indexAxis: 'y',
             scales: {
 
-                y: {
+                x: {
                     beginAtZero: true,
                 },
             },
