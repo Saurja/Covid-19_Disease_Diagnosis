@@ -73,7 +73,7 @@ def upload():
         curLoc = response.json()['region']
 
         # Print result in Webpage
-        print('Prediction:', disease_class[ind],' Confidence: ',a.numpy()) 
+        #print('Prediction:', disease_class[ind],' Confidence: ',a.numpy()) 
         result=disease_class[ind] + " | Confidence : " + str(a.numpy()) + " | Location : " + response.json()['region']
 
         # Save in Database
