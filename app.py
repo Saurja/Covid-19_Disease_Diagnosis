@@ -1,13 +1,18 @@
 import os
 import requests
 import csv
-import sqlite3 as sl
+import traceback
+import random
+import string
+import datetime
+import sqlite3 as sql
 import numpy as np
 from skimage import io
 import torch
 import torchvision.models 
 from PIL import Image
 from torchvision import transforms
+
 
 
 
@@ -72,18 +77,44 @@ def upload():
         response = requests.get("https://ipinfo.io/json?token=6c70431184a111")
         curLoc = response.json()['region']
 
-        # Print result in Webpage
-        #print('Prediction:', disease_class[ind],' Confidence: ',a.numpy()) 
-        result=disease_class[ind] + " | Confidence : " + str(a.numpy()) + " | Location : " + response.json()['region']
-
         # Save in Database
         if disease_class[ind] == 'Covid':
-            import sqlite3 as sl
-            con = sl.connect('locationHistory.db')
+            con = sql.connect('locationHistory.db')
             with con:
                 con.execute("UPDATE LocationHistory SET CovidCases = CovidCases + 1 WHERE State = (?)", [curLoc])
                 con.commit()
         
+        # Save data in from
+        req = request.form
+        req = req.to_dict(flat=True)
+        try:
+            patientName = req['patientName']
+            patientMobile = req['patientMobile']
+            patientAge = req['patientAge']
+            patientGender = req['patientGender']
+            reportDate =  datetime.datetime.now()
+            patientResult = disease_class[ind]
+
+            # Generate Client ID
+            # printing uppercase
+            letters = string.ascii_uppercase
+            ClientID = ''.join(random.choice(letters) for i in range(16))
+            con = sql.connect('patientData.db')
+            with con:
+                cur = con.cursor()
+                cur.execute("INSERT INTO PatientRecords (Name,Mobile,Age,GENDER,Date,Result,ClientID) VALUES (?,?,?,?,?,?,?)",(patientName,patientMobile,patientAge,patientGender,reportDate,patientResult,ClientID) )
+                con.commit()
+                print("Record successfully added")
+        except Exception as exception:
+            con.rollback()
+            traceback.print_exc()
+        finally:
+            con.close()
+        
+        # Print result in Webpage
+        #print('Prediction:', disease_class[ind],' Confidence: ',a.numpy()) 
+        result=disease_class[ind] + " | Confidence: " + str(a.numpy()) + " | Location: " + response.json()['region'] + " | ClientID: " +ClientID
+
         return result
     return None
 
@@ -91,11 +122,11 @@ def upload():
 def chart():
     
     # Fetch data from SQL Server
-    con = sl.connect('locationHistory.db')
+    con = sql.connect('locationHistory.db')
     cursor = con.cursor()
     cursor.execute("SELECT * from LocationHistory")
     data=cursor.fetchall()
-    
+    con.close()
     
 
     legend = 'Covid-19 Cases Detected So Far'
@@ -115,6 +146,26 @@ def chart():
 
 
     return render_template('chart.html', values=values, labels=labels, legend=legend, total=total)
+
+@app.route('/patientData', methods=['GET'])
+def patientData():
+    # Fetch data from SQL Server
+    try:
+        con = sql.connect('patientData.db')
+        cursor = con.cursor()
+
+        # Fetch Data Values
+        cursor.execute("SELECT * from PatientRecords ORDER BY Date DESC LIMIT 10")
+        data=cursor.fetchmany(10)
+        # Fetch Column Names
+        cursor.execute("SELECT * FROM PatientRecords")
+        labels = [tuple[0] for tuple in cursor.description]
+    except:
+        print("Error! Data Fetch Failed")
+    finally:
+        con.close()
+
+    return render_template('patientData.html', data = data, labels=labels)
 
 @app.route('/about', methods=['GET'])
 def about():

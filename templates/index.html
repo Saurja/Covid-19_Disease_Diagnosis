@@ -1,34 +1,104 @@
-{% extends "import.html" %} 
-{% block content %}
+{% extends "import.html" %} {% block content %}
 
 <center>
-    <div class="container mt-5">
-        <br>
-    <h3>Select a X-Ray image to get started...</h2>
-    
-    <br>
-    
-    <form id="upload-file" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" class="btn btn-dark btn-large" id="imageUpload" accept=".png, .jpg, .jpeg">
-    </form>
+    <div class="container">
+        <br />
+        <h2>😷 Get Covid-19 Results Fast! ⚡</h2>
 
-    <div class="image-section" style="display:none;">
-         <img id="imagePreview"  class="img-responsive" src="#" style="width:300px;height:300px;"/><br><br>
-         <div>
-            <button type="button" class="btn btn-primary" id="btn-predict">Predict</button>
-         </div>
+        <br />
+
+        <form id="upload-file" method="post" enctype="multipart/form-data">
+            <h4>Enter Client Details</h4>
+            <div class="row">
+                <div class="col-md-6 my-1">
+                    <label for="inputEmail4" class="form-label"
+                        >Enter Patient Name:</label
+                    >
+                    <input
+                        type="text"
+                        name="patientName"
+                        class="form-control"
+                        id="patientNameUpload"
+                        placeholder="Patient Name"
+                        aria-label="Patient Name"
+                    />
+                </div>
+                <div class="col-md-6 my-1">
+                    <label for="inputEmail4" class="form-label"
+                        >Enter Patient Age:</label
+                    >
+                    <input
+                        type="number"
+                        class="form-control"
+                        name="patientAge"
+                        placeholder="Patient Age"
+                        aria-label="Patient Age"
+                        id="patientAgeUpload"
+                    />
+                </div>
+                <div class="col-md-6 my-1">
+                    <label for="inputEmail4" class="form-label"
+                        >Enter Patient Mobile:</label
+                    >
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="patientMobile"
+                        id="patientMobileUpload"
+                        placeholder="Patient Mobile"
+                        aria-label="Patient Mobile"
+                    />
+                </div>
+                <div class="col-md-6 my-1">
+                    <label for="inputEmail4" class="form-label"
+                        >Enter Patient Gender:</label
+                    >
+                    <select
+                        class="form-control"
+                        aria-label="Select Gender"
+                        name="patientGender"
+                        id="patientGender"
+                    >
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Others</option>
+                    </select>
+                </div>
+                <div class="col-md-12 my-1">
+                    <label for="inputEmail4" class="form-label"
+                        >Upload Chest X-Ray Image:</label
+                    >
+                    <input
+                        type="file"
+                        name="file"
+                        class="form-control"
+                        id="imageUpload"
+                        accept=".png, .jpg, .jpeg"
+                    />
+                </div>
+            </div>
+        </form>
+
+        <div class="image-section" style="display: none">
+            <img
+                id="imagePreview"
+                class="img-responsive"
+                src="#"
+                style="width: 300px; height: 300px"
+            /><br /><br />
+            <div>
+                <button type="button" class="btn btn-primary" id="btn-predict">
+                    Predict
+                </button>
+            </div>
+        </div>
+
+        <div class="loader" style="display: none"></div>
+
+        <h4 id="result">
+            <span> </span>
+        </h4>
     </div>
-
-
-    <div class="loader" style="display:none;"></div>
-
-    <h4 id="result">
-        <span> </span>
-        
-    </h4>
-      </div>
-    
-
 </center>
-<br><br>
+<br /><br />
 {% endblock %}
