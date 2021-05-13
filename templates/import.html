@@ -53,7 +53,8 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav justify-content-end">
+                    <ul class="navbar-nav">
+                        {% if current_user.is_authenticated %}
                         <li class="nav-item active">
                             <a href="/" style="text-decoration: none"
                                 ><button class="btn btn-primary btn-sm m-2">
@@ -82,6 +83,15 @@
                                 </button></a
                             >
                         </li>
+
+                        <li>
+                            <a href="/logout" style="text-decoration: none"
+                                ><button class="btn btn-danger btn-sm m-2">
+                                    Logout
+                                </button></a
+                            >
+                        </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

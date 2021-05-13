@@ -12,18 +12,34 @@ import torch
 import torchvision.models 
 from PIL import Image
 from torchvision import transforms
-
-
-
-
+from models import UserModel,db,login
 
 # Flask utils
 from flask import Flask, redirect, url_for, request, render_template
+from flask_login import login_required, current_user, login_user, logout_user
 from werkzeug.utils import secure_filename
 from gevent.pywsgi import WSGIServer
 
 # Define a flask app
 app = Flask(__name__)
+app.secret_key = 'xyz'
+
+# Code to create the database file before the first user request itself
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db.init_app(app)
+@app.before_first_request
+def create_table():
+    db.create_all()
+
+db.init_app(app)
+login.init_app(app)
+login.login_view = 'login'
+ 
+@app.before_first_request
+def create_all():
+    db.create_all()
 
 # Loading Saved model
 model =torch.load('./SavedModel/CovidModelv1')
@@ -47,14 +63,67 @@ def model_predict(img_path, model):
         preds = model(img.unsqueeze(0))
         return preds
 
+# Route to Login Page
+@app.route('/login', methods = ['POST', 'GET'])
+def login():
+    if current_user.is_authenticated:
+        return redirect('/')
+     
+    if request.method == 'POST':
 
+        req = request.form
+        req = req.to_dict(flat=True)
+        email = req['email']
+
+        
+
+        user = UserModel.query.filter_by(email = email).first()
+        if user is not None and user.check_password(req['password']):
+            print("Loggin in with: " + email + " " + req['password'])
+            login_user(user)
+            return redirect('/')
+    return render_template('login.html')
+
+# Route to Home Page
 @app.route('/', methods=['GET'])
+@login_required
 def index():
-    # Main page
     return render_template('index.html')
 
+# Route to Register Page
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    if current_user.is_authenticated:
+        return redirect('/')
+     
+    if request.method == 'POST':
 
+        req = request.form
+        req = req.to_dict(flat=True)
+
+        email = request.form['email']
+        username = request.form['username']
+        password = request.form['password']
+        print(email)
+        if UserModel.query.filter_by(email=email).first():
+            return ('Email already Present')
+             
+        user = UserModel(email=email, username=username)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+        return redirect('/login')
+    return render_template('register.html')
+
+# Route to Logout Page
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect('/')
+
+# Route to Predict Result
 @app.route('/predict', methods=['GET', 'POST'])
+@login_required
 def upload():
     if request.method == 'POST':
         # Get the file from post request
@@ -118,7 +187,9 @@ def upload():
         return result
     return None
 
+# Route to Charts Page
 @app.route("/chart", methods=['GET'])
+@login_required
 def chart():
     
     # Fetch data from SQL Server
@@ -147,7 +218,9 @@ def chart():
 
     return render_template('chart.html', values=values, labels=labels, legend=legend, total=total)
 
+# Route to Patient Data Page
 @app.route('/patientData', methods=['GET'])
+@login_required
 def patientData():
     # Fetch data from SQL Server
     try:
@@ -167,7 +240,9 @@ def patientData():
 
     return render_template('patientData.html', data = data, labels=labels)
 
+# Route to About Page
 @app.route('/about', methods=['GET'])
+@login_required
 def about():
     # Main page
     return render_template('about.html')
