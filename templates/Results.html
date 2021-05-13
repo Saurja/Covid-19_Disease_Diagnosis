@@ -1,0 +1,49 @@
+{% extends "import.html" %} {% block content %}
+
+<div class="container mt-3">
+    <form action="" method="post">
+        <div class="row">
+            <h2>Get Results</h2>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="InputClientID">Enter Client ID:</label>
+                    <input
+                        type="password"
+                        name="inputClientID"
+                        class="form-control"
+                        id="InputClientID"
+                        placeholder=" Client ID"
+                    />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="InputPhoneNumber">Enter Mobile No.</label>
+                    <input
+                        type="text"
+                        name="mobileInput"
+                        class="form-control"
+                        id="InputPhoneNumber"
+                        aria-describedby="emailHelp"
+                        placeholder="Mobile No."
+                    />
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    {% if data%}
+    <div class="jumbotron">
+        <h1 class="display-5">Hello, {{data[0][1]}}</h1>
+        <p class="lead">
+            Your test result is: {{"Covid Positive 😷" if "Covid"==data[0][6]
+            else "Covid Negative 😊"}}
+        </p>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

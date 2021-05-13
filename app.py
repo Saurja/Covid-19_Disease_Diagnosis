@@ -77,7 +77,6 @@ def login():
 
         user = UserModel.query.filter_by(email = email).first()
         if user is not None and user.check_password(req['password']):
-            print("Loggin in with: " + email + " " + req['password'])
             login_user(user)
             return redirect('/')
     return render_template('login.html')
@@ -102,7 +101,6 @@ def register():
         email = request.form['email']
         username = request.form['username']
         password = request.form['password']
-        print(email)
         if UserModel.query.filter_by(email=email).first():
             return ('Email already Present')
              
@@ -171,7 +169,6 @@ def upload():
                 cur = con.cursor()
                 cur.execute("INSERT INTO PatientRecords (Name,Mobile,Age,GENDER,Date,Result,ClientID) VALUES (?,?,?,?,?,?,?)",(patientName,patientMobile,patientAge,patientGender,reportDate,patientResult,ClientID) )
                 con.commit()
-                print("Record successfully added")
         except Exception as exception:
             con.rollback()
             traceback.print_exc()
@@ -238,12 +235,35 @@ def patientData():
 
     return render_template('patientData.html', data = data, labels=labels)
 
-# Route to About Page
+# Route to Search Page
 @app.route('/about', methods=['GET'])
-@login_required
 def about():
-    # Main page
     return render_template('about.html')
+
+# Route to About Page
+@app.route('/Results', methods=['GET','POST'])
+def Results():
+    if request.method == 'POST':
+        req = request.form
+        req = req.to_dict(flat=True)
+        # Fetch data from SQL Server
+        try:
+            con = sql.connect('patientData.db')
+            cursor = con.cursor()
+            patientMobile = req['mobileInput']
+            ClientID = req['inputClientID']
+            # Fetch Data Values
+            cursor.execute("SELECT * from PatientRecords where Mobile = ? And ClientID = ?",(patientMobile,ClientID))
+            data=cursor.fetchall()
+            # Fetch Column Names
+        except:
+            print("Error! Data Fetch Failed")
+        finally:
+            con.close()
+
+        return render_template('Results.html', data = data)
+
+    return render_template('Results.html')
 
 if __name__ == '__main__':
     # app.run(port=5002, debug=True)

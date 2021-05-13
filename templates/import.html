@@ -23,6 +23,7 @@
             integrity="sha512-VMsZqo0ar06BMtg0tPsdgRADvl0kDHpTbugCBBrL55KmucH6hP9zWdLIWY//OTfMnzz6xWQRxQqsUFefwHuHyg=="
             crossorigin="anonymous"
         ></script>
+        <link rel="icon" type="image/png" href="/static/img/coronavirus.svg" />
     </head>
 
     <body>
@@ -41,6 +42,7 @@
                     />
                     <b>Covid-19 Diagnosis Tool</b>
                 </a>
+
                 <button
                     class="navbar-toggler"
                     type="button"
@@ -83,11 +85,32 @@
                                 </button></a
                             >
                         </li>
-
+                        <li>
+                            <a href="/Results" style="text-decoration: none"
+                                ><button class="btn btn-primary btn-sm m-2">
+                                    Get Results
+                                </button></a
+                            >
+                        </li>
                         <li>
                             <a href="/logout" style="text-decoration: none"
                                 ><button class="btn btn-danger btn-sm m-2">
                                     Logout
+                                </button></a
+                            >
+                        </li>
+                        {% endif %} {% if current_user.is_authenticated == 0 %}
+                        <li>
+                            <a href="/login" style="text-decoration: none"
+                                ><button class="btn btn-success btn-sm m-2">
+                                    Login
+                                </button></a
+                            >
+                        </li>
+                        <li>
+                            <a href="/Results" style="text-decoration: none"
+                                ><button class="btn btn-primary btn-sm m-2">
+                                    Get Results
                                 </button></a
                             >
                         </li>
