@@ -75,8 +75,6 @@ def login():
         req = req.to_dict(flat=True)
         email = req['email']
 
-        
-
         user = UserModel.query.filter_by(email = email).first()
         if user is not None and user.check_password(req['password']):
             print("Loggin in with: " + email + " " + req['password'])
